@@ -412,15 +412,6 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void LiberarAsientoManual()
-    {
-        MensajeAsiento = _servicioAsientos.LiberarAsiento(AsientoLiberarId)
-            ? "Asiento liberado."
-            : "No se pudo liberar el asiento.";
-        RefrescarVista();
-    }
-
-    [RelayCommand]
     private void AsignarConductor()
     {
         if (BusSeleccionadoConductor is null)
