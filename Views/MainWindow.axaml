@@ -9,10 +9,8 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="CIVA - Reserva de Buses"
-        Width="1600"
-        Height="900"
-        MinWidth="1400"
-        MinHeight="850">
+        Width="680"
+        Height="500">
 
     <Window.Styles>
         <Style Selector="TabItem">
