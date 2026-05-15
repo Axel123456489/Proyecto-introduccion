@@ -1,20 +1,225 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:introduccion.ViewModels"
+        xmlns:models="using:introduccion.Models"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="860" d:DesignHeight="600"
         x:Class="introduccion.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="introduccion">
+        Title="CIVA - Reserva de Buses"
+        Width="1600"
+        Height="900"
+        MinWidth="1400"
+        MinHeight="850">
+
+    <Window.Styles>
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Margin" Value="0,4,0,0"/>
+            <Setter Property="MinHeight" Value="26"/>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="Margin" Value="0,4,0,0"/>
+            <Setter Property="MinHeight" Value="26"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="Margin" Value="0,6,0,0"/>
+            <Setter Property="MinHeight" Value="26"/>
+        </Style>
+        <Style Selector="ListBox">
+            <Setter Property="Margin" Value="0,6,0,0"/>
+        </Style>
+            <Style Selector="TextBlock.reservation-label">
+                <Setter Property="Margin" Value="0,4,0,0"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+            </Style>
+    </Window.Styles>
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Grid RowDefinitions="Auto,*" Margin="10">
+        <StackPanel Grid.Row="0" Spacing="4">
+            <TextBlock Text="CIVA - Reserva de Buses" FontSize="18" FontWeight="Bold"/>
+            <TextBlock Text="{Binding MensajeGeneral}" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <TabControl Grid.Row="1" Margin="0,10,0,0">
+            <TabItem Header="Rutas">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10" Spacing="10">
+                        <TextBlock Text="Buscar ruta" FontWeight="Bold"/>
+                        <TextBlock Text="Origen"/>
+                        <TextBox Text="{Binding OrigenBusqueda, Mode=TwoWay}"/>
+                        <TextBlock Text="Destino"/>
+                        <TextBox Text="{Binding DestinoBusqueda, Mode=TwoWay}"/>
+                        <Button Content="Buscar" Command="{Binding BuscarRutaCommand}" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding RutaSugerida}" TextWrapping="Wrap"/>
+
+                        <TextBlock Text="Registrar ruta" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <TextBox Text="{Binding NuevoOrigen, Mode=TwoWay}" PlaceholderText="Nuevo origen"/>
+                        <TextBox Text="{Binding NuevoDestino, Mode=TwoWay}" PlaceholderText="Nuevo destino"/>
+                        <Button Content="Registrar ruta" Command="{Binding CrearRutaCommand}" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding MensajeRuta}" TextWrapping="Wrap"/>
+
+                        <TextBlock Text="Deshabilitar ruta" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <ComboBox ItemsSource="{Binding RutasRegistradas}" SelectedItem="{Binding RutaSeleccionadaEstado}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Ruta">
+                                    <TextBlock Text="{Binding NombreMostrar}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Content="{Binding TextoBotonRutaEstado}" Command="{Binding DeshabilitarRutaCommand}" HorizontalAlignment="Left"/>
+
+                        <TextBlock Text="Rutas registradas" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <ListBox ItemsSource="{Binding ResumenRutas}" Height="200"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Buses">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10" Spacing="10">
+                        <TextBlock Text="Registrar bus" FontWeight="Bold"/>
+                        <TextBox Text="{Binding PlacaBus, Mode=TwoWay}" PlaceholderText="Matrícula"/>
+                        <TextBox Text="{Binding CapacidadBus, Mode=TwoWay}" PlaceholderText="Capacidad"/>
+                        <Button Content="Registrar bus" Command="{Binding AgregarBusCommand}" HorizontalAlignment="Left"/>
+
+                        <TextBlock Text="Estado del bus" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <ComboBox ItemsSource="{Binding BusesRegistrados}" SelectedItem="{Binding BusSeleccionadoDisponibilidad, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Bus">
+                                    <TextBlock Text="{Binding NombreMostrar}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Content="Cambiar estado" Command="{Binding CambiarDisponibilidadBusCommand}" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding MensajeBus}" TextWrapping="Wrap"/>
+
+                        <TextBlock Text="Revisar demanda" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <TextBox Text="{Binding DemandaBusqueda, Mode=TwoWay}" PlaceholderText="Demanda"/>
+                        <Button Content="Evaluar" Command="{Binding EvaluarDemandaCommand}" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding MensajeDemanda}" TextWrapping="Wrap"/>
+
+                        <TextBlock Text="Buses registrados" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <ListBox ItemsSource="{Binding ResumenBuses}" Height="220"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Reservas">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10" Spacing="10">
+                        <TextBlock Text="Registrar reserva" FontWeight="Bold"/>
+                        <TextBlock Classes="reservation-label" Text="Pasajero"/>
+                        <ComboBox ItemsSource="{Binding PasajerosRegistrados}" SelectedItem="{Binding PasajeroSeleccionadoReserva, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Pasajero">
+                                    <TextBlock Text="{Binding NombreMostrar}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBlock Classes="reservation-label" Text="Ruta"/>
+                        <ComboBox ItemsSource="{Binding RutasRegistradas}" SelectedItem="{Binding RutaSeleccionadaReserva, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Ruta">
+                                    <TextBlock Text="{Binding NombreMostrar}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBlock Classes="reservation-label" Text="Bus"/>
+                        <ComboBox ItemsSource="{Binding BusesRegistrados}" SelectedItem="{Binding BusSeleccionadoReserva, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Bus">
+                                    <TextBlock Text="{Binding NombreMostrar}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBlock Classes="reservation-label" Text="Asiento"/>
+                        <TextBox Text="{Binding AsientoReservaId, Mode=TwoWay}" PlaceholderText="Asiento"/>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button Content="Crear reserva" Command="{Binding CrearReservaManualCommand}"/>
+                            <Button Content="Liberar asiento" Command="{Binding LiberarAsientoManualCommand}"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding MensajeReserva}" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding MensajeAsiento}" TextWrapping="Wrap"/>
+
+                        <TextBlock Text="Reservas registradas" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <ListBox ItemsSource="{Binding ResumenReservas}" Height="220"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Conductores">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10" Spacing="10">
+                        <TextBlock Text="Registrar conductor" FontWeight="Bold"/>
+                        <TextBox Text="{Binding NombreConductor, Mode=TwoWay}" PlaceholderText="Nombre"/>
+                        <TextBox Text="{Binding LicenciaConductor, Mode=TwoWay}" PlaceholderText="Licencia"/>
+                        <TextBox Text="{Binding HorasConductor, Mode=TwoWay}" PlaceholderText="Horas"/>
+                        <Button Content="Agregar" Command="{Binding AgregarConductorCommand}" HorizontalAlignment="Left"/>
+
+                        <TextBlock Text="Asignar bus" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <ComboBox ItemsSource="{Binding BusesRegistrados}" SelectedItem="{Binding BusSeleccionadoConductor, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Bus">
+                                    <TextBlock Text="{Binding NombreMostrar}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Content="Asignar" Command="{Binding AsignarConductorCommand}" HorizontalAlignment="Left"/>
+                        <TextBlock Text="Liberar conductor" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <ComboBox ItemsSource="{Binding ConductoresRegistrados}" SelectedItem="{Binding ConductorSeleccionadoGestion, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Conductor">
+                                    <TextBlock Text="{Binding NombreMostrar}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Content="Liberar" Command="{Binding LiberarConductorCommand}" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding MensajeConductor}" TextWrapping="Wrap"/>
+
+                        <TextBlock Text="Conductores registrados" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <ListBox ItemsSource="{Binding ResumenConductoresRegistrados}" Height="180"/>
+
+                        <TextBlock Text="Conductores disponibles" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <ListBox ItemsSource="{Binding ResumenConductores}" Height="180"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Pasajeros">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10" Spacing="10">
+                        <TextBlock Text="Registrar pasajero" FontWeight="Bold"/>
+                        <TextBox Text="{Binding NombrePasajero, Mode=TwoWay}" PlaceholderText="Nombre"/>
+                        <TextBox Text="{Binding DocumentoPasajero, Mode=TwoWay}" PlaceholderText="Documento"/>
+                        <Button Content="Agregar" Command="{Binding AgregarPasajeroCommand}" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding MensajePasajero}" TextWrapping="Wrap"/>
+
+                        <TextBlock Text="Pasajeros registrados" FontWeight="Bold" Margin="0,10,0,0"/>
+                        <ListBox ItemsSource="{Binding ResumenPasajeros}" Height="220"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Historial">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10" Spacing="10">
+                        <TextBlock Text="Acciones recientes" FontWeight="Bold"/>
+                        <ListBox ItemsSource="{Binding AccionesRecientes}" Height="220"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
 
 </Window>
