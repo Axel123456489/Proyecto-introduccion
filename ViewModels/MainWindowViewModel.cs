@@ -412,6 +412,15 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void LiberarAsientoManual()
+    {
+        MensajeAsiento = _servicioAsientos.LiberarAsiento(AsientoLiberarId)
+            ? "Asiento liberado."
+            : "No se pudo liberar el asiento.";
+        RefrescarVista();
+    }
+
+    [RelayCommand]
     private void AsignarConductor()
     {
         if (BusSeleccionadoConductor is null)
@@ -472,16 +481,6 @@ public partial class MainWindowViewModel : ViewModelBase
         MensajeBus = _servicioBuses.CambiarDisponibilidadBus(BusSeleccionadoDisponibilidad.Id, out var estaDisponibleAhora)
             ? (estaDisponibleAhora ? "Bus habilitado." : "Bus deshabilitado.")
             : "No se pudo cambiar el bus.";
-        RefrescarVista();
-    }
-
-    [RelayCommand]
-    private void LiberarAsientoManual()
-    {
-        MensajeAsiento = _servicioAsientos.LiberarAsiento(AsientoLiberarId)
-            ? "Asiento liberado."
-            : "No se pudo liberar el asiento.";
-
         RefrescarVista();
     }
 

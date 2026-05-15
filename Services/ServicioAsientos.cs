@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using introduccion.Database;
+using introduccion.Models;
 
 namespace introduccion.Services;
 
@@ -67,7 +68,6 @@ public class ServicioAsientos
         }
 
         _servicioHistorial?.RegistrarAccion($"Se libero el asiento {numeroAsiento}.");
-
         return true;
     }
 }
