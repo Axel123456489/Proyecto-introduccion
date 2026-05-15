@@ -475,6 +475,16 @@ public partial class MainWindowViewModel : ViewModelBase
         RefrescarVista();
     }
 
+    [RelayCommand]
+    private void LiberarAsientoManual()
+    {
+        MensajeAsiento = _servicioAsientos.LiberarAsiento(AsientoLiberarId)
+            ? "Asiento liberado."
+            : "No se pudo liberar el asiento.";
+
+        RefrescarVista();
+    }
+
     private void RegistrarAccion(string accion)
     {
         _servicioHistorial.RegistrarAccion(accion);
